@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Login = ({ setUser }) => {
@@ -16,13 +17,14 @@ const Login = ({ setUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
 
+    try {
       const res = await axios.post("/api/users/login", formData);
 
+      // store token (optional since gpt suggest to learn but fine)
       localStorage.setItem("token", res.data.token);
 
-    
+
       setUser(true);
     } catch (err) {
       setError("Login failed");
@@ -42,6 +44,7 @@ const Login = ({ setUser }) => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            required
           />
 
           <div className="relative w-full">
@@ -52,23 +55,42 @@ const Login = ({ setUser }) => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              required
             />
             <span
               className="absolute right-4 top-2 cursor-pointer"
               onClick={() => setHide(!hide)}
             >
-              {hide ? <BiShow className="text-3xl" /> : <BiHide className="text-3xl" />}
+              {hide ? (
+                <BiShow className="text-3xl" />
+              ) : (
+                <BiHide className="text-3xl" />
+              )}
             </span>
           </div>
 
-          {error && <p className="text-red-500 text-center mb-2">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-center mb-2">{error}</p>
+          )}
 
+          {/* Login Button */}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg"
           >
             Login
           </button>
+
+
+          <p className="text-center mt-4 text-sm">
+            Don&apos;t have an account?{" "}
+            <Link
+              to="/register"
+              className="text-blue-500 font-semibold hover:underline"
+            >
+              Register
+            </Link>
+          </p>
         </form>
       </div>
     </div>
