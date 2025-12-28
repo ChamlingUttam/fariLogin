@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:3001", // your backend port
+        target: "https://backend-whqt.onrender.com", // your backend port
         changeOrigin: true,
         secure: false,
       },
