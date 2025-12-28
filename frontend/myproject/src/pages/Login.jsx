@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Login = ({ setUser }) => {
@@ -11,21 +10,20 @@ const Login = ({ setUser }) => {
     password: "",
   });
 
-  const navigate = useNavigate();
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await axios.post("/api/users/login", formData);
-      localStorage.setItem("token", res.data.token);
-      setUser(res.data);
 
-      navigate("/"); // correct route
+      const res = await axios.post("/api/users/login", formData);
+
+      localStorage.setItem("token", res.data.token);
+
+    
+      setUser(true);
     } catch (err) {
       setError("Login failed");
     }
@@ -53,24 +51,17 @@ const Login = ({ setUser }) => {
               className="w-full p-3 mb-6 border rounded-lg outline-blue-500"
               name="password"
               value={formData.password}
-              onChange={handleChange} // FIXED
+              onChange={handleChange}
             />
-
             <span
-              className="absolute right-4 top-2"
+              className="absolute right-4 top-2 cursor-pointer"
               onClick={() => setHide(!hide)}
             >
-              {hide ? (
-                <BiShow className="cursor-pointer text-3xl" />
-              ) : (
-                <BiHide className="cursor-pointer text-3xl" />
-              )}
+              {hide ? <BiShow className="text-3xl" /> : <BiHide className="text-3xl" />}
             </span>
           </div>
 
-          {error && (
-            <p className="text-red-500 text-center mb-2">{error}</p>
-          )}
+          {error && <p className="text-red-500 text-center mb-2">{error}</p>}
 
           <button
             type="submit"

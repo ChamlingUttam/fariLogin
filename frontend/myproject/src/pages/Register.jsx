@@ -1,39 +1,35 @@
 import React, { useState } from "react";
-import { BiShow } from "react-icons/bi";
-import { BiHide } from "react-icons/bi";
-import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import { BiShow, BiHide } from "react-icons/bi";
+import axios from "axios";
 
+const Register = ({ setUser }) => {
+  const [hide, setHide] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
-const Register = ({setUser}) => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    const [hide,setHide] = useState(false)
-    const [error,setError]= useState("")
-    const [formData,setFormData] = useState({
-      username:"",
-      email:"",
-      password:"",
-    })
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Simulate API call
+      const res = await axios.post("/api/users/register", formData);
 
-    const handleChange = (e)=>{
-      setFormData({...formData,[e.target.name]: e.target.value})
+      localStorage.setItem("token", res.data.token);
+
+      // Mark as logged in → show Home
+      setUser(true);
+    } catch (err) {
+      setError("Registration failed");
     }
+  };
 
-
-     const navigate = useNavigate();
-    const handleSubmit = async (e)=>{
-      e.preventDefault()
-
-      try {
-        const res = await axios.post("/api/users/register",formData)
-         localStorage.setItem("token", res.data.token)
-         setUser(res.setUser)
-         navigate('/login')
-        
-      } catch (err) {
-        setError("registration failed")
-      }
-    }
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white shadow-lg rounded-xl w-96 p-6">
@@ -58,20 +54,24 @@ const Register = ({setUser}) => {
             onChange={handleChange}
           />
 
-
-<div className="relative w-full">
-
-          <input
-            type={hide ? "text" : "password"}
-            placeholder="Password"
-            className="w-full p-3 mb-6 border rounded-lg outline-blue-500"
-            name="password"
-            onChange={handleChange}
-            value={formData.password}
+          <div className="relative w-full">
+            <input
+              type={hide ? "text" : "password"}
+              placeholder="Password"
+              className="w-full p-3 mb-6 border rounded-lg outline-blue-500"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
             />
+            <span
+              className="absolute right-4 top-2 cursor-pointer"
+              onClick={() => setHide(!hide)}
+            >
+              {hide ? <BiShow className="text-3xl" /> : <BiHide className="text-3xl" />}
+            </span>
+          </div>
 
-            <span className="absolute right-4 top-2" onClick={()=>setHide(!hide)}>{hide?<BiShow className="cursor-pointer text-3xl"/>:<BiHide className="cursor-pointer text-3xl" />}</span>
-            </div>
+          {error && <p className="text-red-500 text-center mb-2">{error}</p>}
 
           <button
             type="submit"
