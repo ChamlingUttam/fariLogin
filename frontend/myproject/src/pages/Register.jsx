@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
-const Register = ({ setUser }) => {
+const Register = () => {
   const [hide, setHide] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -17,14 +20,11 @@ const Register = ({ setUser }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      // Simulate API call
-      const res = await axios.post("/api/users/register", formData);
+      await axios.post("/api/users/register", formData);
 
-      localStorage.setItem("token", res.data.token);
-
-      // Mark as logged in → show Home
-      setUser(true);
+      navigate("/login");
     } catch (err) {
       setError("Registration failed");
     }
@@ -43,6 +43,7 @@ const Register = ({ setUser }) => {
             name="username"
             value={formData.username}
             onChange={handleChange}
+            required
           />
 
           <input
@@ -52,6 +53,7 @@ const Register = ({ setUser }) => {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            required
           />
 
           <div className="relative w-full">
@@ -62,16 +64,23 @@ const Register = ({ setUser }) => {
               name="password"
               value={formData.password}
               onChange={handleChange}
+              required
             />
             <span
               className="absolute right-4 top-2 cursor-pointer"
               onClick={() => setHide(!hide)}
             >
-              {hide ? <BiShow className="text-3xl" /> : <BiHide className="text-3xl" />}
+              {hide ? (
+                <BiShow className="text-3xl" />
+              ) : (
+                <BiHide className="text-3xl" />
+              )}
             </span>
           </div>
 
-          {error && <p className="text-red-500 text-center mb-2">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-center mb-2">{error}</p>
+          )}
 
           <button
             type="submit"
@@ -79,6 +88,17 @@ const Register = ({ setUser }) => {
           >
             Register
           </button>
+
+
+          <p className="text-center mt-4 text-sm">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-blue-500 font-semibold hover:underline"
+            >
+              Login
+            </Link>
+          </p>
         </form>
       </div>
     </div>
